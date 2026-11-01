@@ -11,6 +11,8 @@ spec:
       app.kubernetes.io/name: {{ include "stream-monitoring.name" . }}
   template:
     metadata:
+      annotations:
+        checksum/content-analysis: {{ include (print $.Template.BasePath "/content-analysis-configmap.yaml") . | sha256sum }}
       labels:
         {{- include "stream-monitoring.labels" . | nindent 8 }}
     spec:
@@ -19,6 +21,8 @@ spec:
         runAsNonRoot: true
         runAsUser: 65534
         runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
       containers:
@@ -61,4 +65,57 @@ spec:
               drop:
                 - ALL
             readOnlyRootFilesystem: true
+
+        - name: content-analysis
+          image: "{{ .Values.contentAnalysis.image.repository }}:{{ .Values.contentAnalysis.image.tag }}"
+          imagePullPolicy: {{ .Values.contentAnalysis.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - /scripts/analyze.sh
+          env:
+            - name: STREAM_URL
+              value: {{ .Values.stream.url | quote }}
+            - name: DETECTION_SECONDS
+              value: {{ .Values.contentAnalysis.detectionSeconds | quote }}
+            - name: SILENCE_NOISE
+              value: {{ .Values.contentAnalysis.silenceNoise | quote }}
+            - name: FREEZE_NOISE
+              value: {{ .Values.contentAnalysis.freezeNoise | quote }}
+          ports:
+            - name: content-metrics
+              containerPort: 9091
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: content-metrics
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: content-metrics
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            {{- toYaml .Values.contentAnalysis.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: content-analysis-script
+              mountPath: /scripts
+              readOnly: true
+            - name: content-analysis-tmp
+              mountPath: /tmp
+      volumes:
+        - name: content-analysis-script
+          configMap:
+            name: {{ include "stream-monitoring.name" . }}-content-analysis
+            defaultMode: 0555
+        - name: content-analysis-tmp
+          emptyDir: {}
 

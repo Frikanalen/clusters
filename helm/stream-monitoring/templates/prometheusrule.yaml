@@ -45,6 +45,22 @@ spec:
             summary: Frikanalen audio has stopped advancing
             description: Fewer than one decoded audio frame per second has been observed for more than two minutes.
 
+        - alert: FrikanalenStreamSilent
+          expr: frikanalen_stream_silence_duration_seconds{service="stream-monitoring"} >= {{ .Values.contentAnalysis.silenceAlertSeconds }}
+          labels:
+            severity: critical
+          annotations:
+            summary: Frikanalen stream is silent
+            description: No audio above {{ .Values.contentAnalysis.silenceNoise }} has been detected for at least {{ .Values.contentAnalysis.silenceAlertSeconds }} seconds.
+
+        - alert: FrikanalenStreamFrozen
+          expr: frikanalen_stream_freeze_duration_seconds{service="stream-monitoring"} >= {{ .Values.contentAnalysis.freezeAlertSeconds }}
+          labels:
+            severity: critical
+          annotations:
+            summary: Frikanalen video is frozen
+            description: No significant image motion above {{ .Values.contentAnalysis.freezeNoise }} has been detected for at least {{ .Values.contentAnalysis.freezeAlertSeconds }} seconds.
+
         - alert: FrikanalenStreamCodecErrors
           expr: sum(rate(ffmpeg_codec_errors_total{service="stream-monitoring"}[5m])) > 1
           for: 5m
