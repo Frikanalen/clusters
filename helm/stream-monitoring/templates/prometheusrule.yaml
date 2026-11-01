@@ -4,7 +4,7 @@ metadata:
   name: {{ include "stream-monitoring.name" . }}
   labels:
     {{- include "stream-monitoring.labels" . | nindent 4 }}
-    release: prometheus
+    release: kube-prometheus-stack
 spec:
   groups:
     - name: frikanalen-stream
