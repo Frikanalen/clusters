@@ -43,7 +43,7 @@ data:
           analysis_up=1
         fi
 
-        metrics_file="$web_dir/metrics.tmp"
+        metrics_file="$web_dir/metrics.txt.tmp"
         {
           echo '# HELP frikanalen_content_analysis_up Whether the FFmpeg content analyzer is running.'
           echo '# TYPE frikanalen_content_analysis_up gauge'
@@ -61,7 +61,9 @@ data:
           echo '# TYPE frikanalen_stream_freeze_duration_seconds gauge'
           echo "frikanalen_stream_freeze_duration_seconds $freeze_duration"
         } > "$metrics_file"
-        mv "$metrics_file" "$web_dir/metrics"
+        # The .txt extension makes Python's static server send text/plain,
+        # which Prometheus 3 accepts without a fallback scrape protocol.
+        mv "$metrics_file" "$web_dir/metrics.txt"
         sleep 1
       done
     }
