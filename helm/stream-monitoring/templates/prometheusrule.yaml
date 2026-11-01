@@ -36,6 +36,15 @@ spec:
             summary: Frikanalen video has stopped advancing
             description: Fewer than one decoded video frame per second has been observed for more than two minutes.
 
+        - alert: FrikanalenStreamAudioStalled
+          expr: sum(rate(ffmpeg_frames{service="stream-monitoring",type="processed",media_type="audio"}[2m])) < 1 or absent(ffmpeg_frames{service="stream-monitoring",type="processed",media_type="audio"})
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: Frikanalen audio has stopped advancing
+            description: Fewer than one decoded audio frame per second has been observed for more than two minutes.
+
         - alert: FrikanalenStreamCodecErrors
           expr: sum(rate(ffmpeg_codec_errors_total{service="stream-monitoring"}[5m])) > 1
           for: 5m
