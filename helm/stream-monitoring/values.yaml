@@ -1,0 +1,39 @@
+image:
+  repository: ghcr.io/domcyrus/ffmpeg_exporter
+  tag: v2.0.0
+  pullPolicy: IfNotPresent
+
+stream:
+  url: http://simula.frikanalen.no:9094/frikanalen.ts
+  # Strings prevent YAML/Helm from rendering these CLI arguments in scientific notation.
+  probeSize: "5000000"
+  analyzeDuration: "5000000"
+
+contentAnalysis:
+  image:
+    repository: ghcr.io/jrottenberg/ffmpeg
+    tag: 9.0.1-alpine320
+    pullPolicy: IfNotPresent
+  # FFmpeg emits an event after this many seconds; Prometheus alerts at the
+  # independently configurable total durations below.
+  detectionSeconds: 10
+  silenceNoise: -50dB
+  freezeNoise: -60dB
+  silenceAlertSeconds: 30
+  freezeAlertSeconds: 30
+  resources:
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    limits:
+      cpu: 2000m
+      memory: 512Mi
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+
