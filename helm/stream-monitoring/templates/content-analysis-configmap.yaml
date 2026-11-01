@@ -15,7 +15,7 @@ data:
 
     cleanup() {
       trap - EXIT INT TERM
-      kill "${httpd_pid:-}" "${metrics_pid:-}" "${ffmpeg_pid:-}" 2>/dev/null || true
+      kill "${metrics_pid:-}" "${ffmpeg_pid:-}" 2>/dev/null || true
       wait 2>/dev/null || true
     }
     trap cleanup EXIT INT TERM
@@ -68,8 +68,6 @@ data:
 
     write_metrics &
     metrics_pid=$!
-    busybox httpd -f -p 9091 -h "$web_dir" &
-    httpd_pid=$!
 
     while true; do
       rm -f "$state_dir/silence-start" "$state_dir/freeze-start"
