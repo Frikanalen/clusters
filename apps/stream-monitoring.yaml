@@ -11,7 +11,7 @@ spec:
     path: helm/stream-monitoring
   destination:
     server: https://kubernetes.default.svc
-    namespace: prometheus
+    namespace: monitoring
   syncPolicy:
     automated:
       prune: true
