@@ -15,7 +15,7 @@ spec:
       interval: 15s
       scrapeTimeout: 10s
     - port: content-metrics
-      path: /metrics
+      path: /metrics.txt
       interval: 15s
       scrapeTimeout: 10s
 
