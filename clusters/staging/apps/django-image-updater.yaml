@@ -1,0 +1,19 @@
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: django-api
+  namespace: argocd
+spec:
+  applicationRefs:
+    - namePattern: "django-api"
+      images:
+        - alias: django-api
+          imageName: "ghcr.io/frikanalen/django-api:main"
+          manifestTargets:
+            helm:
+              name: django.image.repository
+              tag: django.image.tag
+          commonUpdateSettings:
+            updateStrategy: digest
+      writeBackConfig:
+        method: argocd

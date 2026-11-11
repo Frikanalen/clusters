@@ -1,6 +1,12 @@
-# gitops
+# gitops (becoming `clusters`)
 
-Helm charts and Argo CD manifests that the clusters consume. Nothing in this
+This repository is turning into **Frikanalen/clusters**: the desired state of
+each Kubernetes cluster, in [`clusters/`](clusters/README.md). The charts
+below move to their own repositories (contribution-receiver,
+stream-monitoring), and the rook-ceph and local-path-provisioner apps move
+under `clusters/<env>/`.
+
+Until then, it also holds Helm charts and Argo CD manifests that the clusters consume. Nothing in this
 repository deploys itself: every Argo CD Application that reads from here is
 created by [Frikanalen/infra](https://github.com/Frikanalen/infra), which also
 chooses the revision per environment.
