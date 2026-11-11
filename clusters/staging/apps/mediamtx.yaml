@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: "https://github.com/Frikanalen/gitops.git"
+    repoURL: "https://github.com/Frikanalen/contribution-receiver.git"
     targetRevision: "main"
-    path: "helm/mediamtx"
+    path: "chart"
     helm:
       values: |
         authURL: http://django-api.default.svc.cluster.local:8080/api/mediamtx/auth
