@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: django-api
+  namespace: argocd
+spec:
+  project: default
+  ignoreDifferences:
+  - jsonPointers:
+    - /data
+    kind: Secret
+    name: django-secret
+    namespace: default
+  source:
+    helm:
+      values: |
+        django:
+          image:
+            repository: ghcr.io/frikanalen/django-api
+            tag: v3.0.0
+        env:
+          ALLOWED_HOSTS: frikanalen.tv,.pod.cluster.local,django-api.default.svc.cluster.local
+          CSRF_TRUSTED_ORIGINS: https://frikanalen.tv
+          FK_MEDIAMTX_RTMP_URL: rtmp://frikanalen.tv:1935
+          FK_MEDIAMTX_RTSP_URL: rtsp://frikanalen.tv:8554
+          FK_MEDIAMTX_SRT_URL: srt://frikanalen.tv:8890
+          FK_MEDIAMTX_WEBRTC_URL: https://frikanalen.tv
+          FK_MEDIA_URLPREFIX: https://frikanalen.tv/media/
+          FK_UPLOAD_URL: https://frikanalen.tv/upload
+        ingress:
+          className: public
+          enabled: true
+          hostname: frikanalen.tv
+        monitoring:
+          enabled: true
+          interval: 30s
+          scrapeTimeout: 10s
+    path: chart
+    repoURL: https://github.com/Frikanalen/django-api.git
+    targetRevision: v3.0.0
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - RespectIgnoreDifferences=true
