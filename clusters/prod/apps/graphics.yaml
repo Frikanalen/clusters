@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: graphics
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Frikanalen/on-air-graphics.git"
+    targetRevision: "v1.5.0"
+    path: "chart"
+    helm:
+      values: |
+        image:
+          tag: v1.5.0
+        ingress:
+          certResolver: letsencrypt
+          className: public
+          hostname: frikanalen.tv
+          path: /graphics
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

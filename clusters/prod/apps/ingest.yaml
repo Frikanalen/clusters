@@ -1,0 +1,77 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingest
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Frikanalen/ingest.git"
+    targetRevision: "v1.1.1"
+    path: "chart"
+    helm:
+      values: |
+        api:
+          secretName: ingest-api
+          url: https://frikanalen.tv
+        archive:
+          dir: /archive/media
+          mount:
+            existingClaim: ingest-archive
+            nfs:
+              path: /archive/media
+              server: file01
+          ssh:
+            enabled: true
+            host: file01
+            port: 22
+            required: true
+            secretChecksum: 8d014dbb5b05c3f1df24aca5f838db494591386c1bb3760f057b9a1e395481fd
+            secretName: ingest-archive-ssh
+            username: ingest
+        image:
+          repository: ghcr.io/frikanalen/ingest
+          tag: v1.1.1
+        ingress:
+          certResolver: letsencrypt
+          className: public
+          enabled: true
+          hostname: frikanalen.tv
+        tusd:
+          basePath: /upload
+        uploads:
+          existingClaim: ''
+          persistence:
+            size: 500Gi
+        workers:
+          pools:
+            qsv:
+              encoder: qsv
+              nodeSelector:
+                frikanalen.tv/gpu-intel-arc-a310: 'true'
+              replicaCount: 1
+              resources:
+                limits:
+                  gpu.intel.com/i915: 1
+                  memory: 4Gi
+                requests:
+                  cpu: '1'
+                  gpu.intel.com/i915: 1
+                  memory: 1Gi
+              topologySpread:
+                enabled: false
+          # The CPU pool is off: ingest runs on the QSV pool on prod-kube-4 only.
+          replicaCount: 0
+          resources:
+            limits:
+              memory: 16Gi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
