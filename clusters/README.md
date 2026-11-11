@@ -14,6 +14,9 @@ Each environment directory holds:
   (`targetRevision` and image tag) and its values written out in full. On
   staging the versions are `main` and Argo CD Image Updater follows the
   digest; on prod they will be release tags.
+- `platform/`: cluster services Argo CD runs, such as rook-ceph and
+  local-path-provisioner. (Traefik, MetalLB, cert-manager and monitoring
+  are still installed by infra with Helm, and will move here later.)
 - `secrets/`: one ExternalSecret per Kubernetes Secret. The values live in
   OpenBao on bao1 at `kv/<env>/<namespace>/<name>`; External Secrets Operator
   copies them in. No secret value is ever committed here.
