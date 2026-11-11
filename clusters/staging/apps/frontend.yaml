@@ -7,13 +7,15 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/frontend.git"
-    targetRevision: "main"
+    targetRevision: "claude/project-thread-1c8lwy"
     path: "chart"
     helm:
       values: |
         djangoUrl: https://staging.frikanalen.tv/
         image:
-          tag: main
+          # The redesign branch (Frikanalen/frontend#99); slashes become
+          # dashes in image tags. Set both back to main to revert.
+          tag: claude-project-thread-1c8lwy
         ingress:
           className: public
           hostname: staging.frikanalen.tv
