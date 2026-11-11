@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mediamtx
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Frikanalen/gitops.git"
+    targetRevision: "main"
+    path: "helm/mediamtx"
+    helm:
+      values: |
+        authURL: http://django-api.default.svc.cluster.local:8080/api/mediamtx/auth
+        monitoring:
+          enabled: true
+          serviceMonitor:
+            enabled: true
+            interval: 30s
+            scrapeTimeout: 10s
+        preview:
+          enabled: true
+        service:
+          loadBalancerIP: 192.168.3.93
+        webrtc:
+          additionalHosts:
+          - staging.frikanalen.tv
+          - 192.168.3.93
+          enabled: true
+          hostname: staging.frikanalen.tv
+          ingressClassName: public
+        writeQueueSize: 4096
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

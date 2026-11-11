@@ -1,0 +1,58 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: django-api
+  namespace: argocd
+spec:
+  project: default
+  ignoreDifferences:
+    - group: ''
+      jsonPointers:
+      - /data
+      kind: Secret
+      name: django-secret
+      namespace: default
+
+  source:
+    repoURL: "https://github.com/Frikanalen/django-api.git"
+    targetRevision: "main"
+    path: "chart"
+    helm:
+      values: |
+        django:
+          image:
+            repository: ghcr.io/frikanalen/django-api
+            tag: main
+        env:
+          ALLOWED_HOSTS: staging.frikanalen.tv,.pod.cluster.local,django-api.default.svc.cluster.local
+          CSRF_TRUSTED_ORIGINS: https://staging.frikanalen.tv
+          FK_MEDIAMTX_RTMP_URL: rtmp://staging.frikanalen.tv:1935
+          FK_MEDIAMTX_RTSP_URL: rtsp://staging.frikanalen.tv:8554
+          FK_MEDIAMTX_SRT_URL: srt://staging.frikanalen.tv:8890
+          FK_MEDIAMTX_WEBRTC_URL: https://staging.frikanalen.tv
+          FK_MEDIA_URLPREFIX: https://staging.frikanalen.tv/media/
+          FK_UPLOAD_URL: https://staging.frikanalen.tv/upload
+        ingress:
+          className: public
+          enabled: true
+          hostname: staging.frikanalen.tv
+        monitoring:
+          enabled: true
+          interval: 30s
+          scrapeTimeout: 10s
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      # ignoreDifferences alone only hides a field from the diff: the next
+      # sync, which every image bump starts, still applies the rendered value
+      # over it. django-api's chart renders a fresh random SECRET_KEY each
+      # time (Helm's lookup is always empty under Argo CD), so without this
+      # every rollout replaced the key and logged everyone out.
+      - RespectIgnoreDifferences=true

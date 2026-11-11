@@ -1,0 +1,60 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingest
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Frikanalen/ingest.git"
+    targetRevision: "main"
+    path: "chart"
+    helm:
+      values: |
+        api:
+          secretName: ingest-api
+          url: https://staging.frikanalen.tv
+        archive:
+          dir: /archive/media-staging
+          mount:
+            existingClaim: ingest-archive
+            nfs:
+              path: /archive/media-staging
+              server: file01
+          ssh:
+            enabled: true
+            host: file01
+            port: 22
+            required: true
+            secretName: ingest-archive-ssh
+            username: ingest-staging
+        image:
+          repository: ghcr.io/frikanalen/ingest
+          tag: main
+        ingress:
+          certResolver: letsencrypt
+          className: public
+          enabled: true
+          hostname: staging.frikanalen.tv
+        tusd:
+          basePath: /upload
+        uploads:
+          existingClaim: ''
+          persistence:
+            size: 100Gi
+        workers:
+          pools: {}
+          replicaCount: 4
+          resources:
+            limits:
+              memory: 16Gi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

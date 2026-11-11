@@ -1,0 +1,19 @@
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: ingest
+  namespace: argocd
+spec:
+  applicationRefs:
+    - namePattern: "ingest"
+      images:
+        - alias: ingest
+          imageName: "ghcr.io/frikanalen/ingest:main"
+          manifestTargets:
+            helm:
+              name: image.repository
+              tag: image.tag
+          commonUpdateSettings:
+            updateStrategy: digest
+      writeBackConfig:
+        method: argocd
