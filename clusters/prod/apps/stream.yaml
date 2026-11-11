@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: stream
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Frikanalen/live-stream-packager.git"
+    targetRevision: "v0.4.0"
+    path: "."
+    helm:
+      values: |
+        cubemap:
+          enabled: true
+          hostNetwork: true
+          loadBalancerIP: 192.168.3.105
+          multicastGroup: 239.1.1.51
+        ffmpeg:
+          inputSourceUrl: http://192.168.3.1:9094/frikanalen.ts
+        ingress:
+          host: frikanalen.tv
+        resources:
+          ffmpeg:
+            limits:
+              cpu: '12'
+            requests:
+              cpu: '6'
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

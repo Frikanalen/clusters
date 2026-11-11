@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: playout
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Frikanalen/playout.git"
+    targetRevision: "v2.5.0"
+    path: "chart"
+    helm:
+      values: |
+        env:
+        - name: MEDIA_ROOT
+          value: /mnt/media/
+        - name: USE_ORIGINAL
+          value: 'true'
+        - name: CASPAR_HOST
+          value: 192.168.3.100
+        - name: API_URL
+          value: https://frikanalen.tv/
+        - name: GRAPHICS_URL
+          value: https://frikanalen.tv/graphics/
+        - name: LIVE_INPUT_URL
+          value: rtsp://192.168.3.107:8554
+        - name: LIVE_METRICS_URL
+          value: http://mediamtx-metrics.default.svc.cluster.local:9998/metrics
+        envFrom:
+        - secretRef:
+            name: playout-live
+            optional: true
+        image:
+          repository: ghcr.io/frikanalen/playout
+          tag: v2.5.0
+        podAnnotations:
+          checksum/live-credential: ca79f841b7f0a6f6b628c1e604142a08cec6fc50d304c2fa4a98af64c15998fc
+        timezone:
+          enabled: true
+          path: /usr/share/zoneinfo/Europe/Oslo
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
