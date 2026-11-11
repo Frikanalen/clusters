@@ -25,6 +25,14 @@ spec:
 
         cephClusterSpec:
           dataDirHostPath: /var/lib/rook
+          # Set just before this cluster is deleted (gitops#22): Rook then
+          # wipes /var/lib/rook and the OSD disks on the nodes.
+          cleanupPolicy:
+            confirmation: yes-really-destroy-data
+            sanitizeDisks:
+              method: quick
+              dataSource: zero
+              iteration: 1
           mon:
             count: 3
             allowMultiplePerNode: false
