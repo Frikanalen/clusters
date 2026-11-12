@@ -1,21 +1,18 @@
-# gitops (becoming `clusters`)
+# clusters
 
-This repository is turning into **Frikanalen/clusters**: the desired state of
-each Kubernetes cluster, in [`clusters/`](clusters/README.md). The charts
-below move to their own repositories (contribution-receiver,
-stream-monitoring), and the rook-ceph and local-path-provisioner apps move
-under `clusters/<env>/`.
+What runs in each Frikanalen Kubernetes cluster, as plain files. Argo CD in
+each cluster syncs its own directory, so **merging here is deploying**.
+See [`clusters/README.md`](clusters/README.md).
 
-Until then, it also holds Helm charts and Argo CD manifests that the clusters consume. Nothing in this
-repository deploys itself: every Argo CD Application that reads from here is
-created by [Frikanalen/infra](https://github.com/Frikanalen/infra), which also
-chooses the revision per environment.
-
-| Path | What it is | Deployed by |
+| Directory | Cluster | Synced by |
 |---|---|---|
-| `helm/mediamtx` | MediaMTX contribution/preview chart | infra `data/apps.yml` (`frikanalen_apps.mediamtx`) |
-| `apps/rook-ceph/` | Rook Ceph operator, CSI drivers and cluster | infra `argocd_gitops` role, `k8s_platform_*.yml` |
-| `apps/local-path-provisioner/` | Per-node SSD storage class | infra `argocd_gitops` role, `k8s_platform_*.yml` |
-| `apps/stream-monitoring.yaml`, `helm/stream-monitoring` | Prod MPEG-TS stream monitor | Not yet in infra (applied by hand); to be moved |
+| `clusters/staging/` | kubedev (staging.frikanalen.tv) | the `staging` root Application |
+| `clusters/prod/` | kubeprod (frikanalen.tv) | the `prod` root Application |
 
-Environment wiring, secrets and firewall configuration live in Frikanalen/infra.
+Charts live in each app's own repository (django-api, frontend, playout,
+contribution-receiver, stream-monitoring, ...). Secret values live in
+OpenBao, never here. The machines, each cluster's bootstrap and the root
+Applications are [Frikanalen/infra](https://github.com/Frikanalen/infra)'s.
+
+This repository used to be called `gitops` and held charts and manifests
+that infra pointed at; those moved out in November 2026.
