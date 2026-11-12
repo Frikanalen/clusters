@@ -12,6 +12,12 @@ spec:
     helm:
       values: |
         authURL: http://django-api.default.svc.cluster.local:8080/api/mediamtx/auth
+        # Pulled live sources (contribution-receiver chart, "Pulled sources").
+        pull:
+          enabled: true
+          credentialSecret: mediamtx-pull
+        networkPolicy:
+          enabled: true
         monitoring:
           enabled: true
           serviceMonitor:
