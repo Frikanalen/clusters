@@ -1,0 +1,40 @@
+# Ingest's upload volume (tusd's partial uploads and anything not yet
+# archived to file01), on prod-kube-4's media receiver disk: 1800Gi on vmtx1's
+# HDD array, made by data/hosts.yml media_disk_size in the infra repo and
+# mounted at /mnt/media by roles/media_disk_mount, which also makes the
+# directory. A local volume, so the ingest pod runs on prod-kube-4.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ingest-uploads-prod-kube-4
+spec:
+  capacity:
+    storage: 1800Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  local:
+    path: /mnt/media/ingest-uploads
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - prod-kube-4
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ingest-uploads-media
+  namespace: default
+spec:
+  storageClassName: ""
+  volumeName: ingest-uploads-prod-kube-4
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1800Gi
