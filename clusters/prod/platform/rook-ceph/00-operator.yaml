@@ -10,7 +10,14 @@ spec:
   source:
     repoURL: https://charts.rook.io/release
     chart: rook-ceph
-    targetRevision: v1.20.3
+    targetRevision: v1.20.10
+    helm:
+      # v1.20.10 bundles ceph-csi v3.17.1; v3.17.2 is the first that can
+      # use the aes256k CephX keys Proxmox's Ceph makes (infra#82).
+      values: |
+        csi:
+          cephcsi:
+            tag: v3.17.2
   destination:
     server: https://kubernetes.default.svc
     namespace: rook-ceph
