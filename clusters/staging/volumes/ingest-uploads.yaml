@@ -1,22 +1,40 @@
 # Ingest's upload volume (tusd's partial uploads and anything not yet
-# archived), on dev-kube-4's local disk: vmtx1's HDD array, sized by
-# local_ssd_size in the infra repo's data/hosts.yml. Off the node's root
-# disk, where microk8s-hostpath used to put it.
-#
-# selected-node is what the scheduler would set for a WaitForFirstConsumer
-# claim; setting it here makes local-path provision on dev-kube-4, and the
-# PV's node affinity then keeps the ingest pod there.
+# archived to file01), on dev-kube-4's media receiver disk: 190Gi on vmtx1's
+# HDD array, made by data/hosts.yml media_disk_size in the infra repo and
+# mounted at /mnt/media by roles/media_disk_mount, which also makes the
+# directory. A local volume, so the ingest pod runs on dev-kube-4.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ingest-uploads-dev-kube-4
+spec:
+  capacity:
+    storage: 190Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  local:
+    path: /mnt/media/ingest-uploads
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - dev-kube-4
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: ingest-uploads-local
+  name: ingest-uploads-media
   namespace: default
-  annotations:
-    volume.kubernetes.io/selected-node: dev-kube-4
 spec:
-  storageClassName: local-ssd
+  storageClassName: ""
+  volumeName: ingest-uploads-dev-kube-4
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Gi
+      storage: 190Gi

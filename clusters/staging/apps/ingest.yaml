@@ -40,7 +40,7 @@ spec:
           basePath: /upload
         uploads:
           # clusters/staging/volumes/ingest-uploads.yaml
-          existingClaim: ingest-uploads-local
+          existingClaim: ingest-uploads-media
         workers:
           pools: {}
           replicaCount: 4
