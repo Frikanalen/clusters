@@ -1,0 +1,19 @@
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: infographics
+  namespace: argocd
+spec:
+  applicationRefs:
+    - namePattern: "infographics"
+      images:
+        - alias: infographics
+          imageName: "ghcr.io/frikanalen/infographics:main"
+          manifestTargets:
+            helm:
+              name: image.repository
+              tag: image.tag
+          commonUpdateSettings:
+            updateStrategy: digest
+      writeBackConfig:
+        method: argocd
