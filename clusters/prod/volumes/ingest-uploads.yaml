@@ -38,3 +38,43 @@ spec:
   resources:
     requests:
       storage: 1800Gi
+---
+# The QSV worker's scratch (/work): the original and its renditions while a
+# job runs, on the same media disk rather than prod-kube-4's 40G root disk.
+# roles/media_disk_mount makes the directory. Each job works in its own
+# temporary directory, so the capacity here only has to be honest, not exact.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ingest-work-prod-kube-4
+spec:
+  capacity:
+    storage: 200Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  local:
+    path: /mnt/media/ingest-work
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - prod-kube-4
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ingest-work-media
+  namespace: default
+spec:
+  storageClassName: ""
+  volumeName: ingest-work-prod-kube-4
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi
