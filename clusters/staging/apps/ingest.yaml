@@ -44,6 +44,18 @@ spec:
         workers:
           pools: {}
           replicaCount: 4
+          # Scratch on each node's local disk rather than its root disk,
+          # which a large source could fill.
+          work:
+            volume:
+              ephemeral:
+                volumeClaimTemplate:
+                  spec:
+                    storageClassName: local-ssd
+                    accessModes: [ReadWriteOnce]
+                    resources:
+                      requests:
+                        storage: 25Gi
           resources:
             limits:
               memory: 16Gi
