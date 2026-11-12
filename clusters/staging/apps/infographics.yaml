@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: infographics
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Frikanalen/infographics.git"
+    targetRevision: "main"
+    path: "chart"
+    helm:
+      values: |
+        image:
+          tag: main
+        ingress:
+          certResolver: letsencrypt
+          className: public
+          hostname: staging.frikanalen.tv
+          path: /infographics
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
