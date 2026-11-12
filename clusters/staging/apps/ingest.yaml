@@ -39,9 +39,8 @@ spec:
         tusd:
           basePath: /upload
         uploads:
-          existingClaim: ''
-          persistence:
-            size: 100Gi
+          # clusters/staging/volumes/ingest-uploads.yaml
+          existingClaim: ingest-uploads-local
         workers:
           pools: {}
           replicaCount: 4
