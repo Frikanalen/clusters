@@ -39,6 +39,8 @@ spec:
           SITE_URL: https://staging.frikanalen.tv
           # Authenticator apps list staging's account apart from the real one.
           OTP_TOTP_ISSUER: Frikanalen (staging)
+          # Passkeys and security keys: on here, off in production for now.
+          PASSKEYS_ENABLED: "true"
           # Real mail through mailcow's submission port; login from OpenBao
           # (email.secret below).
           EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
