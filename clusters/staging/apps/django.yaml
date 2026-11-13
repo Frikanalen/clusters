@@ -37,6 +37,8 @@ spec:
           FK_UPLOAD_URL: https://staging.frikanalen.tv/upload
           # Links in mail (password reset) lead back to staging.
           SITE_URL: https://staging.frikanalen.tv
+          # Authenticator apps list staging's account apart from the real one.
+          OTP_TOTP_ISSUER: Frikanalen (staging)
           # Real mail through mailcow's submission port; login from OpenBao
           # (email.secret below).
           EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
