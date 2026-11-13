@@ -43,7 +43,19 @@ spec:
           existingClaim: ingest-uploads-media
         workers:
           pools: {}
-          replicaCount: 4
+          # Three, not four: one of the four nodes is the stream's, and the
+          # workers' spread constraint would leave a fourth Pending.
+          replicaCount: 3
+          # Never beside the live stream: a worker has no CPU limit, and on
+          # 2026-11-13 one starved the stream's transcoder for hours.
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  namespaceSelector: {}
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: live-stream-packager
           # Scratch on each node's local disk rather than its root disk,
           # which a large source could fill.
           work:

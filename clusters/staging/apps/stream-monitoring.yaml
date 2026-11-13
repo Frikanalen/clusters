@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: stream-monitoring
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Frikanalen/stream-monitoring.git"
+    # Staging follows main, like its other apps. Needs stream-monitoring#2.
+    targetRevision: "main"
+    path: "chart"
+    helm:
+      values: |
+        # Staging's MPEG-TS source is a test loop; what matters is the HLS
+        # that viewers get, which went unplayable for ten hours on 2026-11-13
+        # without anything noticing.
+        tsMonitor:
+          enabled: false
+        hlsProbe:
+          enabled: true
+          url: https://staging.frikanalen.tv/stream/index.m3u8
+        packagerAlerts:
+          enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
