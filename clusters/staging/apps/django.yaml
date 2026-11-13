@@ -32,6 +32,7 @@ spec:
           FK_MEDIAMTX_SRT_URL: srt://staging.frikanalen.tv:8890
           FK_MEDIAMTX_WEBRTC_URL: https://staging.frikanalen.tv
           FK_PROGRAM_RETURN_PATH: contrib/program
+          FK_PROMETHEUS_URL: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
           FK_MEDIA_URLPREFIX: https://staging.frikanalen.tv/media/
           FK_UPLOAD_URL: https://staging.frikanalen.tv/upload
         ingress:
