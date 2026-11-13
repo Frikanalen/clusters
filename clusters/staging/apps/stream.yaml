@@ -20,12 +20,12 @@ spec:
           inputSourceUrl: http://192.168.3.1:9094/frikanalen.ts
         ingress:
           host: staging.frikanalen.tv
-        resources:
-          ffmpeg:
-            limits:
-              cpu: '6'
-            requests:
-              cpu: '1'
+        # The chart's own resources: the transcoder requests the 5 CPU its
+        # two x264 encodes use. Staging asked for 1 until 2026-11-13, when an
+        # ingest worker beside it took the node and the stream came apart.
+        priorityClass:
+          name: stream-critical
+          create: true
 
   destination:
     server: https://kubernetes.default.svc
