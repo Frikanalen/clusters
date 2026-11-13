@@ -15,14 +15,14 @@ spec:
 
   source:
     repoURL: "https://github.com/Frikanalen/django-api.git"
-    targetRevision: "v3.1.0"
+    targetRevision: "v3.2.0"
     path: "chart"
     helm:
       values: |
         django:
           image:
             repository: ghcr.io/frikanalen/django-api
-            tag: v3.1.0
+            tag: v3.2.0
         env:
           ALLOWED_HOSTS: frikanalen.tv,.pod.cluster.local,django-api.default.svc.cluster.local
           CSRF_TRUSTED_ORIGINS: https://frikanalen.tv
@@ -32,6 +32,15 @@ spec:
           FK_MEDIAMTX_WEBRTC_URL: https://frikanalen.tv
           FK_MEDIA_URLPREFIX: https://frikanalen.tv/media/
           FK_UPLOAD_URL: https://frikanalen.tv/upload
+          # Links in mail (password reset) lead back to the site.
+          SITE_URL: https://frikanalen.tv
+          # Real mail through mailcow's submission port; login from OpenBao
+          # (email.secret below).
+          EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
+          EMAIL_HOST: mail.frikanalen.tv
+          EMAIL_PORT: "587"
+          EMAIL_USE_TLS: "true"
+          DEFAULT_FROM_EMAIL: Frikanalen <noreply@frikanalen.tv>
         ingress:
           className: public
           enabled: true
@@ -43,6 +52,9 @@ spec:
         # Encrypts pulled live sources' addresses; from OpenBao.
         pullUrlKeys:
           secret: django-pull-url-keys
+        # SMTP login on mail.frikanalen.tv; from OpenBao.
+        email:
+          secret: django-smtp
 
   destination:
     server: https://kubernetes.default.svc
