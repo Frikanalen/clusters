@@ -32,6 +32,13 @@ spec:
           FK_MEDIAMTX_WEBRTC_URL: https://staging.frikanalen.tv
           FK_MEDIA_URLPREFIX: https://staging.frikanalen.tv/media/
           FK_UPLOAD_URL: https://staging.frikanalen.tv/upload
+          # Real mail through mailcow's submission port; login from OpenBao
+          # (email.secret below).
+          EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
+          EMAIL_HOST: mail.frikanalen.tv
+          EMAIL_PORT: "587"
+          EMAIL_USE_TLS: "true"
+          DEFAULT_FROM_EMAIL: Frikanalen (staging) <noreply@frikanalen.tv>
         ingress:
           className: public
           enabled: true
@@ -43,6 +50,9 @@ spec:
         # Encrypts pulled live sources' addresses; from OpenBao.
         pullUrlKeys:
           secret: django-pull-url-keys
+        # SMTP login on mail.frikanalen.tv; from OpenBao.
+        email:
+          secret: django-smtp
 
   destination:
     server: https://kubernetes.default.svc
