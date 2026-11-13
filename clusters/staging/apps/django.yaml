@@ -26,10 +26,13 @@ spec:
         env:
           ALLOWED_HOSTS: staging.frikanalen.tv,.pod.cluster.local,django-api.default.svc.cluster.local
           CSRF_TRUSTED_ORIGINS: https://staging.frikanalen.tv
+          FK_MEDIAMTX_API_URL: http://mediamtx-api.default.svc.cluster.local:9997
           FK_MEDIAMTX_RTMP_URL: rtmp://staging.frikanalen.tv:1935
           FK_MEDIAMTX_RTSP_URL: rtsp://staging.frikanalen.tv:8554
           FK_MEDIAMTX_SRT_URL: srt://staging.frikanalen.tv:8890
           FK_MEDIAMTX_WEBRTC_URL: https://staging.frikanalen.tv
+          FK_PROGRAM_RETURN_PATH: contrib/program
+          FK_PROMETHEUS_URL: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
           FK_MEDIA_URLPREFIX: https://staging.frikanalen.tv/media/
           FK_UPLOAD_URL: https://staging.frikanalen.tv/upload
         ingress:
