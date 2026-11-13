@@ -7,11 +7,18 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/contribution-receiver.git"
-    targetRevision: "88640e6c619076759aa5acbc505463796baa5583"
+    targetRevision: "03dcc3d0665467b28423cdd7cfaea8dbecdaeb14"
     path: "chart"
     helm:
       values: |
         authURL: http://django-api.default.svc.cluster.local:8080/api/mediamtx/auth
+        # Pulled live sources (contribution-receiver chart, "Pulled sources").
+        pull:
+          enabled: true
+          credentialSecret: mediamtx-pull
+        # Keeps the pull relay from reaching the cluster or the LAN.
+        networkPolicy:
+          enabled: true
         monitoring:
           enabled: true
           serviceMonitor:

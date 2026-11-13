@@ -40,6 +40,9 @@ spec:
           enabled: true
           interval: 30s
           scrapeTimeout: 10s
+        # Encrypts pulled live sources' addresses; from OpenBao.
+        pullUrlKeys:
+          secret: django-pull-url-keys
 
   destination:
     server: https://kubernetes.default.svc
