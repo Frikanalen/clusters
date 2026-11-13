@@ -31,6 +31,7 @@ spec:
           FK_MEDIAMTX_RTSP_URL: rtsp://staging.frikanalen.tv:8554
           FK_MEDIAMTX_SRT_URL: srt://staging.frikanalen.tv:8890
           FK_MEDIAMTX_WEBRTC_URL: https://staging.frikanalen.tv
+          FK_PROGRAM_RETURN_PATH: contrib/program
           FK_MEDIA_URLPREFIX: https://staging.frikanalen.tv/media/
           FK_UPLOAD_URL: https://staging.frikanalen.tv/upload
         ingress:

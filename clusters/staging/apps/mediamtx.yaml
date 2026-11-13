@@ -15,6 +15,13 @@ spec:
         # Django reads what signal each source receives (signal reports).
         api:
           enabled: true
+        # A low-latency copy of the programme for the live monitor, read from
+        # the stream packager's Cubemap (hostNetwork, so on the node network).
+        programReturn:
+          enabled: true
+          sourceURL: http://stream-live-stream-packager-cubemap.default.svc.cluster.local:9094/stream.ts
+          sourceCIDRs:
+          - 192.168.3.0/24
         # Pulled live sources (contribution-receiver chart, "Pulled sources").
         pull:
           enabled: true
