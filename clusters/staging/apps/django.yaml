@@ -35,6 +35,8 @@ spec:
           FK_PROMETHEUS_URL: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
           FK_MEDIA_URLPREFIX: https://staging.frikanalen.tv/media/
           FK_UPLOAD_URL: https://staging.frikanalen.tv/upload
+          # Links in mail (password reset) lead back to staging.
+          SITE_URL: https://staging.frikanalen.tv
           # Real mail through mailcow's submission port; login from OpenBao
           # (email.secret below).
           EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
