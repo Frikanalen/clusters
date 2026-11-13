@@ -15,14 +15,14 @@ spec:
 
   source:
     repoURL: "https://github.com/Frikanalen/django-api.git"
-    targetRevision: "v3.0.0"
+    targetRevision: "v3.1.0"
     path: "chart"
     helm:
       values: |
         django:
           image:
             repository: ghcr.io/frikanalen/django-api
-            tag: v3.0.0
+            tag: v3.1.0
         env:
           ALLOWED_HOSTS: frikanalen.tv,.pod.cluster.local,django-api.default.svc.cluster.local
           CSRF_TRUSTED_ORIGINS: https://frikanalen.tv
