@@ -12,6 +12,9 @@ spec:
     helm:
       values: |
         authURL: http://django-api.default.svc.cluster.local:8080/api/mediamtx/auth
+        # Django reads what signal each source receives (signal reports).
+        api:
+          enabled: true
         # Pulled live sources (contribution-receiver chart, "Pulled sources").
         pull:
           enabled: true
