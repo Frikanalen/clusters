@@ -38,7 +38,7 @@ spec:
           EMAIL_HOST: mail.frikanalen.tv
           EMAIL_PORT: "587"
           EMAIL_USE_TLS: "true"
-          DEFAULT_FROM_EMAIL: Frikanalen (staging) <noreply@frikanalen.tv>
+          DEFAULT_FROM_EMAIL: Frikanalen (staging) <noreply-staging@frikanalen.tv>
         ingress:
           className: public
           enabled: true
