@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/ingest.git"
-    targetRevision: "v1.2.0"
+    targetRevision: "v1.2.1"
     path: "chart"
     helm:
       values: |
@@ -31,7 +31,7 @@ spec:
             username: ingest
         image:
           repository: ghcr.io/frikanalen/ingest
-          tag: v1.2.0
+          tag: v1.2.1
         ingress:
           certResolver: letsencrypt
           className: public
