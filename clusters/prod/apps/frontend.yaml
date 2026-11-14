@@ -13,7 +13,7 @@ spec:
       values: |
         djangoUrl: https://frikanalen.tv/
         image:
-          tag: v3.8.0
+          tag: v3.9.0
         ingress:
           className: public
           hostname: frikanalen.tv
