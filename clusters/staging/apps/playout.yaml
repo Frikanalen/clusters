@@ -32,7 +32,7 @@ spec:
             optional: true
         image:
           repository: ghcr.io/frikanalen/playout
-          tag: claude-project-thread-nic5xi
+          tag: main
         timezone:
           enabled: true
           path: /usr/share/zoneinfo/Europe/Oslo
