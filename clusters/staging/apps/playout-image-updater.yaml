@@ -8,7 +8,7 @@ spec:
     - namePattern: "playout"
       images:
         - alias: playout
-          imageName: "ghcr.io/frikanalen/playout:claude-project-thread-nic5xi"
+          imageName: "ghcr.io/frikanalen/playout:main"
           manifestTargets:
             helm:
               name: image.repository
