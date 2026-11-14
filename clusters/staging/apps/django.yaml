@@ -22,7 +22,7 @@ spec:
         django:
           image:
             repository: ghcr.io/frikanalen/django-api
-            tag: main
+            tag: claude-project-thread-c44uwy
         env:
           ALLOWED_HOSTS: staging.frikanalen.tv,.pod.cluster.local,django-api.default.svc.cluster.local
           CSRF_TRUSTED_ORIGINS: https://staging.frikanalen.tv

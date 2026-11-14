@@ -13,7 +13,7 @@ spec:
       values: |
         djangoUrl: https://staging.frikanalen.tv/
         image:
-          tag: main
+          tag: claude-project-thread-c44uwy
         ingress:
           className: public
           hostname: staging.frikanalen.tv
