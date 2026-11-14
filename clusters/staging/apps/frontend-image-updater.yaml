@@ -8,7 +8,7 @@ spec:
     - namePattern: "frontend"
       images:
         - alias: frontend
-          imageName: "ghcr.io/frikanalen/frontend:main"
+          imageName: "ghcr.io/frikanalen/frontend:claude-project-thread-c44uwy"
           manifestTargets:
             helm:
               name: image.repository
