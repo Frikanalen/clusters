@@ -1,0 +1,30 @@
+# Rolls staging's ttxd and ttx-pages onto each new build from teletext main,
+# like the other staging apps. ttx-inject on sdi-test1 replays the last
+# carousel cycle while ttxd restarts, so a rollout doesn't blank the teletext.
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: teletext
+  namespace: argocd
+spec:
+  applicationRefs:
+    - namePattern: "teletext"
+      images:
+        - alias: ttxd
+          imageName: "ghcr.io/frikanalen/ttxd:main"
+          manifestTargets:
+            helm:
+              name: image.repository
+              tag: image.tag
+          commonUpdateSettings:
+            updateStrategy: digest
+        - alias: ttx-pages
+          imageName: "ghcr.io/frikanalen/ttx-pages:latest"
+          manifestTargets:
+            helm:
+              name: pages.image.repository
+              tag: pages.image.tag
+          commonUpdateSettings:
+            updateStrategy: digest
+      writeBackConfig:
+        method: argocd
