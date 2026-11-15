@@ -12,9 +12,9 @@ spec:
     path: "chart"
     helm:
       values: |
+        # teletext-image-updater.yaml pins each new :main build by digest.
         image:
           tag: main
-          pullPolicy: Always
         # Publisher tokens: kv/staging/teletext/ttxd-tokens, keys pages and subtitles.
         tokens:
           externalSecret:
@@ -33,8 +33,7 @@ spec:
             hostname: staging.frikanalen.tv
         persistence:
           storageClass: ceph-rbd
-        # The studio page generator (teletext#15). :latest until a release
-        # carries the ttx-pages image.
+        # The studio page generator (teletext#15), on :latest from main.
         pages:
           enabled: true
           image:
