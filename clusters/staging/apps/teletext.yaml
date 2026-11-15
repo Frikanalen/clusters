@@ -24,9 +24,13 @@ spec:
         link:
           service:
             loadBalancerIP: 192.168.3.94
-        # The web teletext viewer's read-only feed.
+        # The web teletext viewer's read-only feed, at /teletext/ on the site
+        # (needs teletext#16).
         public:
           enabled: true
+          ingress:
+            enabled: true
+            hostname: staging.frikanalen.tv
         persistence:
           storageClass: ceph-rbd
         # The studio page generator (teletext#15). :latest until a release
