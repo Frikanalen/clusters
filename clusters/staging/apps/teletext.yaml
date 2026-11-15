@@ -29,6 +29,12 @@ spec:
           enabled: true
         persistence:
           storageClass: ceph-rbd
+        # The studio page generator (teletext#15). :latest until a release
+        # carries the ttx-pages image.
+        pages:
+          enabled: true
+          image:
+            tag: latest
   destination:
     server: https://kubernetes.default.svc
     namespace: teletext
