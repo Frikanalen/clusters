@@ -1,0 +1,33 @@
+# Rolls staging's teletext forward on every push to teletext main, like the
+# other staging apps: Image Updater re-pins each tag to its current digest
+# (main@sha256:…, latest@sha256:…), so Argo CD sees a change and redeploys.
+# ttxd's Deployment is Recreate, so ttx-inject on sdi-test1 replays its last
+# carousel cycle for the few seconds it takes, then reconnects.
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: teletext
+  namespace: argocd
+spec:
+  applicationRefs:
+    - namePattern: "teletext"
+      images:
+        - alias: ttxd
+          imageName: "ghcr.io/frikanalen/ttxd:main"
+          manifestTargets:
+            helm:
+              name: image.repository
+              tag: image.tag
+          commonUpdateSettings:
+            updateStrategy: digest
+        # The ttx-pages image workflow publishes :latest (not :main) from main.
+        - alias: ttx-pages
+          imageName: "ghcr.io/frikanalen/ttx-pages:latest"
+          manifestTargets:
+            helm:
+              name: pages.image.repository
+              tag: pages.image.tag
+          commonUpdateSettings:
+            updateStrategy: digest
+      writeBackConfig:
+        method: argocd
