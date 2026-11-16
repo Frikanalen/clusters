@@ -7,7 +7,9 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/contribution-receiver.git"
-    targetRevision: "main"
+    # Pinned to the RTSP relay (#10) until prod Django has django-api#141
+    # (SRT publish from the pull relay); then back to "main".
+    targetRevision: "9e7ea9cebc2c9544387c20b79ab3b3d929e55e1f"
     path: "chart"
     helm:
       values: |
