@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/contribution-receiver.git"
-    targetRevision: "main"
+    targetRevision: "9e7ea9cebc2c9544387c20b79ab3b3d929e55e1f"
     path: "chart"
     helm:
       values: |
