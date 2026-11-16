@@ -23,7 +23,7 @@ spec:
         - name: GRAPHICS_URL
           value: https://staging.frikanalen.tv/graphics/
         - name: LIVE_INPUT_URL
-          value: rtsp://192.168.3.93:8554
+          value: srt://192.168.3.93:8890
         - name: LIVE_METRICS_URL
           value: http://mediamtx-metrics.default.svc.cluster.local:9998/metrics
         envFrom:
