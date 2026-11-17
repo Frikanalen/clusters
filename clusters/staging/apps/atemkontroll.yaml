@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: atemkontroll
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Frikanalen/atemkontroll.git"
+    targetRevision: "main"
+    path: "chart"
+    helm:
+      # Staging has no mixer of its own (the real one is prod's), so it
+      # runs against the built-in mock.
+      values: |
+        image:
+          tag: main
+        atemAddress: mock
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
