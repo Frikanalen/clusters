@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/contribution-receiver.git"
-    targetRevision: "main"
+    targetRevision: "claude/project-thread-tdvmj4"
     path: "chart"
     helm:
       values: |
