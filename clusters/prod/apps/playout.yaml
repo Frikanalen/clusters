@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/playout.git"
-    targetRevision: "v2.7.0"
+    targetRevision: "v2.8.0"
     path: "chart"
     helm:
       values: |
@@ -30,9 +30,6 @@ spec:
         - secretRef:
             name: playout-live
             optional: true
-        image:
-          repository: ghcr.io/frikanalen/playout
-          tag: v2.7.0
         podAnnotations:
           checksum/live-credential: ca79f841b7f0a6f6b628c1e604142a08cec6fc50d304c2fa4a98af64c15998fc
         timezone:
