@@ -16,6 +16,15 @@ spec:
         image:
           tag: main
         atemAddress: mock
+        # Internal-only, for hosts outside the cluster (caspar-sw1's
+        # audio watchdog rehearses against the mock here).
+        ingress:
+          enabled: true
+          className: internal
+          hostname: atemkontroll.intern.dev.frikanalen.tv
+          certResolver: letsencrypt
+        serviceMonitor:
+          enabled: true
 
   destination:
     server: https://kubernetes.default.svc
