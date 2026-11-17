@@ -13,8 +13,6 @@ spec:
       # The studio's ATEM 1 M/E. The prod kube nodes reach it through
       # their 10.3.0.x addresses (infra roles/mixer_subnet_address).
       values: |
-        image:
-          tag: v0.2.0
         atemAddress: 10.3.2.1
         # Short names as set on the studio mixer: input 1 "VM1" is caspar1,
         # input 3 "TX3" is tx3 (the fallback).

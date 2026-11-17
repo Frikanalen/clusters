@@ -11,9 +11,11 @@ each cluster syncs its own directory, so **merging here is deploying**:
 Each environment directory holds:
 
 - `apps/`: one Argo CD Application per app, with its version
-  (`targetRevision` and image tag) and its values written out in full. On
-  staging the versions are `main` and Argo CD Image Updater follows the
-  digest; on prod they are release tags, and charts from other repos
+  (`targetRevision`) and its values written out in full. On staging the
+  versions are `main`, the image tag is set to `main` and Argo CD Image
+  Updater follows the digest; on prod they are release tags, and each chart
+  runs its own release's image (`v<Chart.Version>`), so no image tag is set.
+  Charts from other repos
   (contribution-receiver, stream-monitoring) are pinned to a commit.
 - `platform/`: cluster services Argo CD runs, such as rook-ceph and
   local-path-provisioner. (Traefik, MetalLB, cert-manager and monitoring
@@ -30,8 +32,8 @@ repository.
 
 ## Releasing to an environment
 
-Change `targetRevision` and the image tag in `<env>/apps/<app>.yaml`, open a
-PR, merge. Argo CD rolls it out and corrects any drift on its own.
+Change `targetRevision` in `<env>/apps/<app>.yaml`, open a PR, merge. The
+chart at that tag picks the matching image itself. Argo CD rolls it out and corrects any drift on its own.
 
 On prod, playout's `checksum/live-credential` and ingest's `secretChecksum`
 still carry the values infra last computed, so that the handover restarted

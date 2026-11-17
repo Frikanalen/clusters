@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/ingest.git"
-    targetRevision: "v1.3.0"
+    targetRevision: "v1.3.1"
     path: "chart"
     helm:
       values: |
@@ -29,9 +29,6 @@ spec:
             secretChecksum: 8d014dbb5b05c3f1df24aca5f838db494591386c1bb3760f057b9a1e395481fd
             secretName: ingest-archive-ssh
             username: ingest
-        image:
-          repository: ghcr.io/frikanalen/ingest
-          tag: v1.3.0
         ingress:
           certResolver: letsencrypt
           className: public
