@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: atemkontroll
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Frikanalen/atemkontroll.git"
+    targetRevision: "v0.2.0"
+    path: "chart"
+    helm:
+      # The studio's ATEM 1 M/E. The prod kube nodes reach it through
+      # their 10.3.0.x addresses (infra roles/mixer_subnet_address).
+      values: |
+        image:
+          tag: v0.2.0
+        atemAddress: 10.3.2.1
+        # Internal-only, for caspar1's audio watchdog.
+        ingress:
+          enabled: true
+          className: internal
+          hostname: atemkontroll.intern.frikanalen.tv
+          certResolver: letsencrypt
+        serviceMonitor:
+          enabled: true
+        prometheusRule:
+          enabled: true
+        grafanaDashboard:
+          enabled: true
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
