@@ -25,6 +25,10 @@ spec:
           certResolver: letsencrypt
         serviceMonitor:
           enabled: true
+        # The dashboard, to look at against the mock. No alert rules here:
+        # the mock would only page about a pretend mixer.
+        grafanaDashboard:
+          enabled: true
 
   destination:
     server: https://kubernetes.default.svc
