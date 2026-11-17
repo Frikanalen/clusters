@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: atemkontroll
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Frikanalen/atemkontroll.git"
+    targetRevision: "main"
+    path: "chart"
+    helm:
+      # Staging has no mixer of its own (the real one is prod's), so it
+      # runs against the built-in mock.
+      values: |
+        image:
+          tag: main
+        atemAddress: mock
+        # Internal-only, for hosts outside the cluster (caspar-sw1's
+        # audio watchdog rehearses against the mock here).
+        ingress:
+          enabled: true
+          className: internal
+          hostname: atemkontroll.intern.dev.frikanalen.tv
+          certResolver: letsencrypt
+        serviceMonitor:
+          enabled: true
+        # The dashboard, to look at against the mock. No alert rules here:
+        # the mock would only page about a pretend mixer.
+        grafanaDashboard:
+          enabled: true
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
