@@ -62,6 +62,16 @@ spec:
         # SMTP login on mail.frikanalen.tv; from OpenBao.
         email:
           secret: django-smtp
+        # Follows Stortinget's speaker list (stortinget/keeper.py). Dry run:
+        # it only logs what it would book and cut, and never reads the live
+        # sources, so these are prod's ids for now. Set staging's own before
+        # turning dry run off.
+        stortingetKeeper:
+          enabled: true
+          dryRun: true
+          liveSourceId: 39
+          democracyNow:
+            liveSourceId: 38
 
   destination:
     server: https://kubernetes.default.svc
