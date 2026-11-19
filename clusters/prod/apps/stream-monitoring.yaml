@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/stream-monitoring.git"
-    targetRevision: "3c27f7f24a24d0ff0574d949c58a1d7e1e2b08f2"
+    targetRevision: "3f8475d1cee654fe3a35ccdcf4f726a865301534"
     path: "chart"
   destination:
     server: https://kubernetes.default.svc

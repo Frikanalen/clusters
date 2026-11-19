@@ -15,7 +15,7 @@ spec:
 
   source:
     repoURL: "https://github.com/Frikanalen/django-api.git"
-    targetRevision: "v3.10.0"
+    targetRevision: "v3.11.0"
     path: "chart"
     helm:
       values: |
