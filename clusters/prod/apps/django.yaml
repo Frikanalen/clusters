@@ -49,6 +49,11 @@ spec:
         # SMTP login on mail.frikanalen.tv; from OpenBao.
         email:
           secret: django-smtp
+        # nginx2root (CVE-2026-123007 and others): 1.30.7 fixes them. v3.10.0's
+        # chart still says nginx:latest; the next release pins it. Drop this then.
+        nginx:
+          image:
+            tag: 1.30.7-alpine
 
   destination:
     server: https://kubernetes.default.svc

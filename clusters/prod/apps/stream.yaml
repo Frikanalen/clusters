@@ -11,6 +11,11 @@ spec:
     path: "."
     helm:
       values: |
+        # nginx2root (CVE-2026-123007 and others): 1.30.7 fixes them. In the
+        # chart's own values from the next release on; drop this then.
+        image:
+          nginx:
+            tag: 1.30.7-alpine
         cubemap:
           enabled: true
           hostNetwork: true
