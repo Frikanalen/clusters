@@ -15,6 +15,10 @@ spec:
         # Django reads what signal each source receives (signal reports).
         api:
           enabled: true
+        # Recordings on request: Django adds contrib/record/<id> paths, ingest
+        # fetches them from the playback server (mediamtx-playback:9996).
+        recording:
+          enabled: true
         # A low-latency copy of the programme for the live monitor, read from
         # the stream packager's Cubemap (hostNetwork, so on the node network).
         programReturn:
