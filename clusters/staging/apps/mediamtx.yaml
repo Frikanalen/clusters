@@ -19,6 +19,8 @@ spec:
         # fetches them from the playback server (mediamtx-playback:9996).
         recording:
           enabled: true
+          # The cluster's Ceph class (there is no ceph-block here).
+          storageClassName: ceph-rbd
         # A low-latency copy of the programme for the live monitor, read from
         # the stream packager's Cubemap (hostNetwork, so on the node network).
         programReturn:
