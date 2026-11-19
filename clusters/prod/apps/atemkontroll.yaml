@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/atemkontroll.git"
-    targetRevision: "v0.2.0"
+    targetRevision: "v0.2.1"
     path: "chart"
     helm:
       # The studio's ATEM 1 M/E. The prod kube nodes reach it through
