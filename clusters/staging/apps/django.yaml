@@ -27,6 +27,10 @@ spec:
           ALLOWED_HOSTS: staging.frikanalen.tv,.pod.cluster.local,django-api.default.svc.cluster.local
           CSRF_TRUSTED_ORIGINS: https://staging.frikanalen.tv
           FK_MEDIAMTX_API_URL: http://mediamtx-api.default.svc.cluster.local:9997
+          # Recordings on request (recordings app): MediaMTX's playback server
+          # and ingest's upload pod, which archives each recording.
+          FK_MEDIAMTX_PLAYBACK_URL: http://mediamtx-playback.default.svc.cluster.local:9996
+          FK_INGEST_INTERNAL_URL: http://ingest-upload.default.svc.cluster.local:8000
           FK_MEDIAMTX_RTMP_URL: rtmp://staging.frikanalen.tv:1935
           FK_MEDIAMTX_RTSP_URL: rtsp://staging.frikanalen.tv:8554
           FK_MEDIAMTX_SRT_URL: srt://staging.frikanalen.tv:8890
@@ -72,6 +76,13 @@ spec:
           liveSourceId: 39
           democracyNow:
             liveSourceId: 38
+          # Records Democracy Now! 14-15 every weekday and reruns it at 20:00
+          # (logged only while dryRun is on).
+          democracyNowRerun:
+            at: "20:00"
+        # Keeps MediaMTX recording what has been requested (recordings app).
+        recordingKeeper:
+          enabled: true
 
   destination:
     server: https://kubernetes.default.svc
