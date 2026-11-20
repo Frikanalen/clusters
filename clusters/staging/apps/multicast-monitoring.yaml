@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: multicast-monitoring
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Frikanalen/stream-monitoring.git"
+    # stream-monitoring#5. Follow "main" once merged, like its other apps.
+    targetRevision: "7c53269257787fe71fcb753d1511be79f8f9f189"
+    path: "chart"
+    helm:
+      # The same checks as the outgoing MPEG-TS (stalls, codec errors, frozen
+      # and silent picture), on caspar-sw1's multicast program out, before the
+      # packager. A fault that shows here and in stream-monitoring is
+      # upstream of the packager; one that shows only there is in it.
+      values: |
+        nameOverride: multicast-monitoring
+        stream:
+          title: caspar-sw1 multicast
+          url: "udp://239.1.1.50:5004?overrun_nonfatal=1&fifo_size=1000000"
+        # Multicast does not cross the pod network; the metrics ports then
+        # bind on the node, so keep them off the release next to this one.
+        hostNetwork: true
+        ports:
+          metrics: 9190
+          contentMetrics: 9191
+          hlsMetrics: 9192
+        dashboard:
+          title: Frikanalen / caspar-sw1 multicast
+          uid: frikanalen-caspar-sw1-multicast
+        hlsProbe:
+          enabled: false
+        packagerAlerts:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
