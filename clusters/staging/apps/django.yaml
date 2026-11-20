@@ -58,6 +58,10 @@ spec:
           hostname: staging.frikanalen.tv
         monitoring:
           enabled: true
+        # Weekly copy of prod's database (Monday 00:15), from the dump prod's
+        # jobs/staging-refresh-dump.yaml leaves in Garage.
+        stagingDbRefresh:
+          enabled: true
           interval: 30s
           scrapeTimeout: 10s
         # Encrypts pulled live sources' addresses; from OpenBao.

@@ -1,0 +1,28 @@
+# The staging-db-refresh CronJob comes from the django-api chart
+# (stagingDbRefresh in apps/django.yaml). A failed run raises
+# kube-prometheus-stack's KubeJobFailed; this catches it not succeeding at
+# all, including never being scheduled.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: staging-db-refresh
+  namespace: default
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: staging-refresh
+      rules:
+        - alert: StagingDbRefreshOverdue
+          expr: >-
+            time() - kube_cronjob_status_last_successful_time{cronjob="staging-db-refresh"}
+            > 8 * 86400
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Staging's database has not been refreshed from prod for over a week"
+            description: >-
+              CronJob default/staging-db-refresh last succeeded
+              {{ $value | humanizeDuration }} ago. Check its last Job's logs
+              (download, restore, migrate).

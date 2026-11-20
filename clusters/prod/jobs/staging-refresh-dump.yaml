@@ -1,0 +1,103 @@
+# Weekly dump of the production database for staging to restore: Sunday
+# night it writes fkweb.pgdump to the staging-refresh bucket in Garage on
+# file01, with a key for that bucket and nothing else. Staging's
+# staging-db-refresh CronJob (django-api chart, stagingDbRefresh) restores it
+# on Monday at 00:15. Nothing on staging can reach prod.
+#
+# Read-only on prod: pg_dump as the application user. Postgres 16 tools, the
+# same major version as pgcluster.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: staging-refresh-dump
+  namespace: default
+spec:
+  schedule: "30 23 * * 0"
+  timeZone: Europe/Oslo
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 1800
+      template:
+        spec:
+          restartPolicy: Never
+          volumes:
+            - name: work
+              emptyDir:
+                sizeLimit: 5Gi
+          initContainers:
+            - name: dump
+              image: ghcr.io/cloudnative-pg/postgresql:16
+              command: ["pg_dump", "-Fc", "-f", "/work/fkweb.pgdump"]
+              env:
+                - name: PGHOST
+                  value: pgcluster-rw
+                - name: PGDATABASE
+                  value: fkweb
+                - name: PGUSER
+                  value: fkweb
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: django-postgres-passwords
+                      key: djangoPassword
+              volumeMounts:
+                - name: work
+                  mountPath: /work
+          containers:
+            - name: upload
+              image: rclone/rclone:1.68.2
+              args: ["copyto", "/work/fkweb.pgdump", "garage:staging-refresh/fkweb.pgdump"]
+              env:
+                - name: RCLONE_CONFIG_GARAGE_TYPE
+                  value: s3
+                - name: RCLONE_CONFIG_GARAGE_PROVIDER
+                  value: Other
+                - name: RCLONE_CONFIG_GARAGE_ENDPOINT
+                  value: http://192.168.3.59:3900  # Garage on file01
+                - name: RCLONE_CONFIG_GARAGE_REGION
+                  value: garage
+                - name: RCLONE_CONFIG_GARAGE_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: staging-refresh-s3
+                      key: ACCESS_KEY_ID
+                - name: RCLONE_CONFIG_GARAGE_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: staging-refresh-s3
+                      key: SECRET_ACCESS_KEY
+              volumeMounts:
+                - name: work
+                  mountPath: /work
+---
+# A failed run raises kube-prometheus-stack's KubeJobFailed. This catches the
+# job not succeeding at all, including never being scheduled.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: staging-refresh-dump
+  namespace: default
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: staging-refresh
+      rules:
+        - alert: StagingRefreshDumpOverdue
+          expr: >-
+            time() - kube_cronjob_status_last_successful_time{cronjob="staging-refresh-dump"}
+            > 8 * 86400
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Prod's weekly database dump for staging has not succeeded for over a week"
+            description: >-
+              CronJob default/staging-refresh-dump last succeeded
+              {{ $value | humanizeDuration }} ago. Staging keeps restoring the
+              previous dump until it does.
