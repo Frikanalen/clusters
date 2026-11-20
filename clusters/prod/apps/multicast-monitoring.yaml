@@ -7,8 +7,8 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/stream-monitoring.git"
-    # stream-monitoring#5's merge commit.
-    targetRevision: "ae3681728f8da887d0e0758331074c173772c020"
+    # A stream-monitoring release; release-please tags them.
+    targetRevision: "v0.3.0"
     path: "chart"
     helm:
       # The same checks as the outgoing MPEG-TS (stalls, codec errors, frozen
