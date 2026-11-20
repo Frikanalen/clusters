@@ -9,6 +9,16 @@ spec:
     repoURL: "https://github.com/Frikanalen/stream-monitoring.git"
     targetRevision: "3f8475d1cee654fe3a35ccdcf4f726a865301534"
     path: "chart"
+    helm:
+      values: |
+        # The MPEG-TS monitor (tsMonitor, on by default) watches
+        # frikanalen.ts. These add what staging has run since 2026-11-13:
+        # a player-like probe of the public HLS (default URL is
+        # frikanalen.tv's) and alerts on the packager's own pods.
+        hlsProbe:
+          enabled: true
+        packagerAlerts:
+          enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
