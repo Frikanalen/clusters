@@ -7,8 +7,8 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/stream-monitoring.git"
-    # Staging follows main, like its other apps.
-    targetRevision: "main"
+    # stream-monitoring#5. Follow "main" once merged, like its other apps.
+    targetRevision: "7c53269257787fe71fcb753d1511be79f8f9f189"
     path: "chart"
     helm:
       # The same checks as the outgoing MPEG-TS (stalls, codec errors, frozen
