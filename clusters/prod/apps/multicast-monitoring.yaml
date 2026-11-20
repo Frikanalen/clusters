@@ -7,8 +7,8 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/stream-monitoring.git"
-    # stream-monitoring#5. Re-pin to its merge commit once merged.
-    targetRevision: "7c53269257787fe71fcb753d1511be79f8f9f189"
+    # stream-monitoring#5's merge commit.
+    targetRevision: "3f8475d1cee654fe3a35ccdcf4f726a865301534"
     path: "chart"
     helm:
       # The same checks as the outgoing MPEG-TS (stalls, codec errors, frozen
