@@ -15,10 +15,17 @@ spec:
 
   source:
     repoURL: "https://github.com/Frikanalen/django-api.git"
-    targetRevision: "v3.11.0"
+    # Hotfix on top of v3.11.0: jukebox no longer needs is_filler and
+    # favours new material (django-api#175). Back to a release tag with
+    # the next django release.
+    targetRevision: "49e0c50b140f2c31e8b24697f732b1e7fd2a0194"
     path: "chart"
     helm:
       values: |
+        django:
+          image:
+            repository: ghcr.io/frikanalen/django-api
+            tag: sha-49e0c50
         env:
           ALLOWED_HOSTS: frikanalen.tv,.pod.cluster.local,django-api.default.svc.cluster.local
           CSRF_TRUSTED_ORIGINS: https://frikanalen.tv
