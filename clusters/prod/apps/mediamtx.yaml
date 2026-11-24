@@ -12,6 +12,9 @@ spec:
     helm:
       values: |
         authURL: http://django-api.default.svc.cluster.local:8080/api/mediamtx/auth
+        # Django adds recording paths and reads signal through the API.
+        api:
+          enabled: true
         # Recordings on request: Django adds contrib/record/<id> paths, ingest
         # fetches them from the playback server (mediamtx-playback:9996).
         recording:
