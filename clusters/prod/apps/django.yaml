@@ -24,6 +24,7 @@ spec:
           CSRF_TRUSTED_ORIGINS: https://frikanalen.tv
           # Recordings on request (recordings app): MediaMTX's playback server
           # and ingest's upload pod, which archives each recording.
+          FK_MEDIAMTX_API_URL: http://mediamtx-api.default.svc.cluster.local:9997
           FK_MEDIAMTX_PLAYBACK_URL: http://mediamtx-playback.default.svc.cluster.local:9996
           FK_INGEST_INTERNAL_URL: http://ingest-upload.default.svc.cluster.local:8000
           FK_MEDIAMTX_RTMP_URL: rtmp://frikanalen.tv:1935
