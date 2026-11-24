@@ -12,6 +12,11 @@ spec:
     helm:
       values: |
         authURL: http://django-api.default.svc.cluster.local:8080/api/mediamtx/auth
+        # Recordings on request: Django adds contrib/record/<id> paths, ingest
+        # fetches them from the playback server (mediamtx-playback:9996).
+        recording:
+          enabled: true
+          storageClassName: ceph-rbd
         # Pulled live sources (contribution-receiver chart, "Pulled sources").
         pull:
           enabled: true
