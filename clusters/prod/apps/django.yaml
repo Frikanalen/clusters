@@ -49,6 +49,17 @@ spec:
         # SMTP login on mail.frikanalen.tv; from OpenBao.
         email:
           secret: django-smtp
+        # Keeps Stortinget's sittings on air (Tue/Wed), Democracy Now! 14-15
+        # in an emptied hall, and the EU Commission's midday briefing on the
+        # days EbS lists one (stortinget/keeper.py).
+        stortingetKeeper:
+          enabled: true
+          dryRun: false
+          liveSourceId: 39
+          democracyNow:
+            liveSourceId: 38
+          euBriefing:
+            liveSourceId: 5
 
   destination:
     server: https://kubernetes.default.svc
