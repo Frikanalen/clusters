@@ -46,8 +46,8 @@ spec:
           # Three, not four: one of the four nodes is the stream's, and the
           # workers' spread constraint would leave a fourth Pending.
           replicaCount: 3
-          # Never beside the live stream: a worker has no CPU limit, and on
-          # 2026-11-13 one starved the stream's transcoder for hours.
+          # Never beside the live stream: on 2026-11-13 a worker without a
+          # CPU limit starved the stream's transcoder for hours.
           affinity:
             podAntiAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -68,8 +68,14 @@ spec:
                     resources:
                       requests:
                         storage: 25Gi
+          # A CPU limit as well: during a re-encode backlog (2026-11-23/24)
+          # the three workers took up to 16 cores each, pinning dev-kube-1
+          # at 98% and keeping the node saturation alerts flapping. Staging
+          # transcodes may as well be slow; the cluster also runs the
+          # stream, playout and everything else being tested.
           resources:
             limits:
+              cpu: "4"
               memory: 16Gi
 
   destination:
