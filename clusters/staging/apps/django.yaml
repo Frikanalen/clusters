@@ -87,6 +87,12 @@ spec:
         # Keeps MediaMTX recording what has been requested (recordings app).
         recordingKeeper:
           enabled: true
+        # The air log the stream's airlog recorder keeps (Sendelogg, staff
+        # only), served from its own deployment under /api/airlog.
+        airlog:
+          nfs:
+            server: file01
+            path: /archive/airlog-staging
 
   destination:
     server: https://kubernetes.default.svc

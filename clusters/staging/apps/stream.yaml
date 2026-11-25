@@ -26,6 +26,15 @@ spec:
         priorityClass:
           name: stream-critical
           create: true
+        # A week of what the stream carried, at 360p, for staff's Sendelogg
+        # page (django-api airlog app). On file01's archive/airlog-staging
+        # dataset (infra roles/air_log_storage), which Django reads too.
+        airlog:
+          enabled: true
+          storage:
+            nfs:
+              server: file01
+              path: /archive/airlog-staging
 
   destination:
     server: https://kubernetes.default.svc
