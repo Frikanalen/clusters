@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Frikanalen/ingest.git"
-    targetRevision: "v1.4.2"
+    targetRevision: "v1.5.0"
     path: "chart"
     helm:
       values: |
